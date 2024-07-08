@@ -49,15 +49,20 @@
     self.mButton.hidden = YES;
     NSURL *audioUrl = [[NSBundle mainBundle] URLForResource:@"music" withExtension:@"aac"];
     SystemSoundID soundID;
+    // create a system sound object
     AudioServicesCreateSystemSoundID((__bridge CFURLRef)audioUrl, &soundID);
+    // register a callback function that is invoked when a specified system sound finishes playing
     AudioServicesAddSystemSoundCompletion(soundID, NULL, NULL, &playCallback, (__bridge void *_Nullable)(self));
+    // play a system sound object
     AudioServicesPlaySystemSound(soundID);
 }
 
-void playCallback(SystemSoundID ID, void  *clientData)
+void playCallback(SystemSoundID ssID, void  *clientData)
 {
     ViewController *vc = (__bridge ViewController *)clientData;
     vc->_mButton.hidden = NO;
+    // 振动
+    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 
 @end
